@@ -21,6 +21,7 @@ const request = require('request'),
   cover: '',                                   // optional
   outputDir: './',                              // optional
   charset: 'utf8',                             // optional
+  generateMarkdown: false,                     // optional
   addFrontMatter: false                        // optional
  }
  */
@@ -32,8 +33,14 @@ function ebookCrawler(options = {}) {
     bookName = options.bookName,
     cover = options.cover,
     outputDir = options.outputDir || './',
-    charset = options.charset || 'utf8'
-    addFrontMatter = options.addFrontMatter || false
+    charset = options.charset || 'utf8',
+    addFrontMatter = options.addFrontMatter || false,
+    generateMarkdown = options.generateMarkdown || false
+
+  let urls = url
+  if (typeof(url) === 'string') {
+    urls = [url]
+  }
 
   const requestOption = {
     'encoding': null,
@@ -59,49 +66,63 @@ function ebookCrawler(options = {}) {
     return
   }
 
-  request(url, requestOption, function(error, response, body) {
-    if (!error && response.statusCode === 200) {
-      body = new Buffer(body);
-      body = iconv.decode(body, charset)
+  console.log('start analyzing toc')
+  let asyncFunc = urls.map((url) => {
+    return function(cb) {
+      request(url, requestOption, function(error, response, body) {
+        if (!error && response.statusCode === 200) {
+          body = new Buffer(body)
+          body = iconv.decode(body, charset)
 
-      console.log('start analyzing toc')
-      let $ = cheerio.load(body.toString('utf8'))
-      let toc = table($)
-
-      let total = toc.length,
-        count = 0
-
-      // analysisTOC(toc)
-      let asyncFunc = toc.map((t) => {
-        return function(cb) {
-          request(t.url, requestOption, function(error, response, body) {
-            count++
-            process.stdout.write('                                    \r')
-            process.stdout.write(`${count}/${total} finished`)
-            if (!error && response.statusCode === 200) {
-              body = new Buffer(body);
-              body = iconv.decode(body, charset)
-              let $ = cheerio.load(body.toString('utf8'))
-              t.content = content($, t.title) // save to toc
-              cb(null, null)
-            } else {
-              console.log('\nfailed to fetch ' + t.url)
-              t.content = null
-              cb(null, null)
-            }
-          })
+          let $ = cheerio.load(body.toString('utf8'))
+          let toc = table($)
+          cb(null, toc || [])
+        } else {
+          throw 'failed to fetch ' + url
+          cb(null, [])
         }
       })
+    }
+  })
 
-      console.log('start downloading...')
-      async.parallelLimit(asyncFunc, 50, function(error, results) {
-        console.log('\ndone crawling the website')
-          // console.log(toc)
+  async.parallelLimit(asyncFunc, 50, function(error, tocs) {
+    let toc = tocs.reduce((a, b) => a.concat(b))
+
+
+    let total = toc.length,
+      count = 0
+
+    let asyncFunc = toc.map((t) => {
+      return function(cb) {
+        request(t.url, requestOption, function(error, response, body) {
+          count++
+          process.stdout.write('                                    \r')
+          process.stdout.write(`${count}/${total} finished`)
+          if (!error && response.statusCode === 200) {
+            body = new Buffer(body);
+            body = iconv.decode(body, charset)
+            let $ = cheerio.load(body.toString('utf8'))
+            t.content = content($, t.title) // save to toc
+            cb(null, null)
+          } else {
+            console.log('\nfailed to fetch ' + t.url)
+            t.content = null
+            cb(null, null)
+          }
+        })
+      }
+    })
+
+    console.log('start downloading...')
+    async.parallelLimit(asyncFunc, 50, function(error, results) {
+      console.log('\ndone crawling the website')
+        // console.log(toc)
         // output file
-        if (!fs.existsSync(outputDir)){
-          fs.mkdirSync(outputDir)
-        }
+      if (!fs.existsSync(outputDir)) {
+        fs.mkdirSync(outputDir)
+      }
 
+      if (generateMarkdown) {
         contentsFolder = path.resolve(outputDir, 'contents')
         if (!fs.existsSync(contentsFolder)) {
           fs.mkdirSync(contentsFolder)
@@ -151,11 +172,11 @@ function ebookCrawler(options = {}) {
 
         // console.log(summary)
         console.log('done creating ebook markdown files')
-      })
+      }
 
-    } else {
-      console.log('\nfailed to fetch ' + url)
-    }
+      // generate epub
+
+    })
   })
 }
 

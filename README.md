@@ -4,6 +4,7 @@ A simple ebook crawler for study purpose...
 ## How to use?  
 * clone or download this project.  
 * cd to project folder  
+* `npm install`  
 * modify `example.js`  
 * `node example.js`  
 
@@ -15,7 +16,7 @@ the `options` object has the following specifications:
 | name  | required | type | example |
 |---|---|---|---|
 | bookName | required | string | 宰执天下 |
-| url | required | string | http://www.piaotian.net/html/0/738/ |
+| url | required | string or array | http://www.piaotian.net/html/0/738/ |
 | `table` | required | function | check `example.js` |  
 | `content` | required | function | check `example.js` |  
 | author | optional | string | 'cuslaa' |  

@@ -9,6 +9,7 @@ ebookCrawler({
   cover: 'http://g.hiphotos.baidu.com/baike/w%3D268/sign=096c18fa1f30e924cfa49b3774096e66/472309f7905298227c6a3c31d7ca7bcb0b46d4e2.jpg',
   outputDir: './test',
   addFrontMatter: true,
+  generateMarkdown: true,
 
   // $ is cheerio of the html
   table: function($) {
