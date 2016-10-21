@@ -1,19 +1,44 @@
-* 1
-  * 2
-*
+# Ebook Crawler  
+A simple ebook crawler for study purpose...
 
-/*
-  toc:
-  [
-    {
-      title: 'chapter 1',
-      level: 0,
-      url: '...'
-    },
-    {
-      title: 'section 1.1',
-      level: 1,
-      url: '...'
-    }
-  ]
- */
+## How to use?  
+* clone or download this project.  
+* cd to project folder  
+* modify `example.js`  
+* `node example.js`  
+
+## API  
+`ebookCrawler`  
+you should pass an `options` object to `ebookCrawler` function.   
+the `options` object has the following specifications:  
+
+| name  | required | type | example |
+|---|---|---|---|
+| bookName | required | string | 宰执天下 |
+| url | required | string | http://www.piaotian.net/html/0/738/ |
+| `table` | required | function | check `example.js` |  
+| `content` | required | function | check `example.js` |  
+| author | optional | string | 'cuslaa' |  
+| cover | optional | string | 'http://...' |
+| outputDir | optional | string | './' |  
+| charset | optional | string | 'utf8', 'gb2312'|
+| addFrontMatter | optional | boolean | false |   
+
+`table` function will parse toc for ebook.   
+it should return an `array` in this format.   
+```
+[
+  {
+    "title": "title of chapter or section",
+    "level": "chapter level. default 0",
+    "url": "url to that chapter"
+  },
+  {
+    ...
+  }
+]
+```
+
+`content` function will parse the content got from `url` of `toc`.     
+
+check `example.js` for the example of `table` and `content` function.  

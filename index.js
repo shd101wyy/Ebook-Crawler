@@ -2,6 +2,7 @@ const request = require('request'),
   cheerio = require('cheerio'),
   async = require('async'),
   iconv = require('iconv-lite'),
+  uslug = require('uslug'),
   fs = require('fs'),
   path = require('path')
 
@@ -99,25 +100,55 @@ function ebookCrawler(options = {}) {
           fs.mkdirSync(outputDir)
         }
 
-        if (!fs.existsSync(path.resolve(outputDir, 'contents'))) {
-          fs.mkdirSync(path.resolve(outputDir, 'contents'))
+        contentsFolder = path.resolve(outputDir, 'contents')
+        if (!fs.existsSync(contentsFolder)) {
+          fs.mkdirSync(contentsFolder)
         }
 
         let summary = `# ${bookName}\n\n`
+
+        if (addFrontMatter) {
+          let frontMatter = `---\nebook:\n  title: ${bookName}\n`
+          if (cover) {
+            frontMatter += `  cover: ${cover}\n`
+          }
+          if (author) {
+            frontMatter += `  authors: ${author}\n`
+          }
+          frontMatter += '---\n\n'
+          summary = frontMatter + summary
+        }
+
         for (let i = 0; i < toc.length; i++) {
           let level = toc[i].level || 0,
             title = toc[i].title,
-            url = toc[i].url
+            url = toc[i].url,
+            content = toc[i].content
+
+          let titleSlug = uslug(title)
+
+          if (!content) continue // no content found
 
           let j = 0
           while (j < level * 2) {
             summary += ' '
             j++
           }
-          summary += `* [${title}](./contents/${title}.md)\n`
+          summary += `* [${title}](./contents/${titleSlug}.md)\n`
+
+          // write file
+          fs.writeFile(path.resolve(contentsFolder, `${titleSlug}.md`), content, function(error) {
+            if (error) throw error
+          })
+
+          // write summary
+          fs.writeFile(path.resolve(outputDir, `${bookName}.md`), summary, function(error) {
+            if (error) throw error
+          })
         }
 
-        console.log(summary)
+        // console.log(summary)
+        console.log('done creating ebook markdown files')
       })
 
     } else {

@@ -4,7 +4,13 @@ let url = 'http://www.piaotian.net/html/0/738/'
 ebookCrawler({
   url,
   bookName: '宰执天下',
-  charset: 'gb2312',
+  charset: 'gb2312', // resolve Chinese character issue
+  author: 'cuslaa',
+  cover: 'http://g.hiphotos.baidu.com/baike/w%3D268/sign=096c18fa1f30e924cfa49b3774096e66/472309f7905298227c6a3c31d7ca7bcb0b46d4e2.jpg',
+  outputDir: './test',
+  addFrontMatter: true,
+
+  // $ is cheerio of the html
   table: function($) {
     let toc = []
     let as = $('.mainbody a')
@@ -18,12 +24,14 @@ ebookCrawler({
         level: 0
       })
     }
-    // return toc
-    return toc.slice(0, 10) // for test
+    return toc
+    // return toc.slice(0, 10) // for test
   },
+
+  // $ is the cheerio of the html
   content: function($) {
     $('title, script, div, table, span, h1').remove()
-    let text = $('html').text().trim()
-    return text
-  }
+    let text = $('html').text().trim().replace('()',  '').replace(/\n    /g, '\n') // get content  
+    return '# ' + text
+  },
 })
