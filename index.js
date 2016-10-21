@@ -64,6 +64,7 @@ function ebookCrawler(options = {}) {
       body = new Buffer(body);
       body = iconv.decode(body, charset)
 
+      console.log('start analyzing toc')
       let $ = cheerio.load(body.toString('utf8'))
       let toc = table($)
 
@@ -81,7 +82,7 @@ function ebookCrawler(options = {}) {
               body = new Buffer(body);
               body = iconv.decode(body, charset)
               let $ = cheerio.load(body.toString('utf8'))
-              t.content = content($) // save to toc
+              t.content = content($, t.title) // save to toc
               cb(null, null)
             } else {
               console.log('\nfailed to fetch ' + t.url)
@@ -92,6 +93,7 @@ function ebookCrawler(options = {}) {
         }
       })
 
+      console.log('start downloading...')
       async.parallelLimit(asyncFunc, 50, function(error, results) {
         console.log('\ndone crawling the website')
           // console.log(toc)

@@ -29,9 +29,10 @@ ebookCrawler({
   },
 
   // $ is the cheerio of the html
-  content: function($) {
+  // title is title...
+  content: function($, title) {
     $('title, script, div, table, span, h1').remove()
-    let text = $('html').text().trim().replace('()',  '').replace(/\n    /g, '\n') // get content  
-    return '# ' + text
+    let text = $('html').text().trim().replace('()',  '').replace(/\n    /g, '\n') // get content
+    return `# ${title}\n` + text
   },
 })
