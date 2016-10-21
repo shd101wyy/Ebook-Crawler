@@ -1,0 +1,28 @@
+{
+  "name": "ebook_crawler",
+  "version": "0.0.1",
+  "description": "ebook crawler for study purpose",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shd101wyy/Ebook-Crawler.git"
+  },
+  "keywords": [
+    "ebook"
+  ],
+  "author": "shd101wyy",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/shd101wyy/Ebook-Crawler/issues"
+  },
+  "homepage": "https://github.com/shd101wyy/Ebook-Crawler#readme",
+  "dependencies": {
+    "async": "^2.1.2",
+    "cheerio": "^0.22.0",
+    "iconv-lite": "^0.4.13",
+    "request": "^2.75.0"
+  }
+}
