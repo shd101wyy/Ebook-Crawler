@@ -42,3 +42,6 @@ it should return an `array` in this format.
 `content` function will parse the content got from `url` of `toc`.     
 
 check `example.js` for the example of `table` and `content` function.  
+
+## Generate ebook file  
+The output `bookName.md` file can be converted to `.ePub`, `.mobi` etc files by using [Markdown Preview Enhanced](https://github.com/shd101wyy/markdown-preview-enhanced) package. Documentation can be found [here](https://github.com/shd101wyy/markdown-preview-enhanced/blob/master/docs/ebook.md).
