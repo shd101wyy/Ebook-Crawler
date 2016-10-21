@@ -2,6 +2,7 @@ const request = require('request'),
   cheerio = require('cheerio'),
   async = require('async'),
   iconv = require('iconv-lite'),
+  Epub = require('epub-gen'),
   uslug = require('uslug'),
   fs = require('fs'),
   path = require('path')
@@ -175,6 +176,23 @@ function ebookCrawler(options = {}) {
       }
 
       // generate epub
+      console.log('start creating .epub file')
+      let epubOption = {
+        title: bookName,
+        author: author,
+        cover: cover,
+        content: toc.filter((t)=> t.content).map((t)=> {
+          return {
+            title: t.title,
+            data: t.content
+          }
+        })
+      }
+      new Epub(epubOption, path.resolve(outputDir, `./${bookName}.epub`)).promise.then(function() {
+        console.log('done creating .epub file')
+      }, function(error) {
+        console.log('failed to create .epub file')
+      })
 
     })
   })

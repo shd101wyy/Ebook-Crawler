@@ -9,7 +9,7 @@ ebookCrawler({
   cover: 'http://g.hiphotos.baidu.com/baike/w%3D268/sign=096c18fa1f30e924cfa49b3774096e66/472309f7905298227c6a3c31d7ca7bcb0b46d4e2.jpg',
   outputDir: './test',
   addFrontMatter: true,
-  generateMarkdown: true,
+  generateMarkdown: false,
 
   // $ is cheerio of the html
   table: function($) {
@@ -33,7 +33,7 @@ ebookCrawler({
   // title is title...
   content: function($, title) {
     $('title, script, div, table, span, h1').remove()
-    let text = $('html').text().trim().replace('()',  '').replace(/\n    /g, '\n') // get content
-    return `# ${title}\n` + text
+    let text = $('html').text().trim().replace('()',  '').replace(/\n    /g, '\n').replace(/\n/g, '<br>') // get content
+    return text
   },
 })

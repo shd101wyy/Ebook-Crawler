@@ -1,5 +1,7 @@
 # Ebook Crawler  
-A simple ebook crawler for study purpose...
+A simple ebook crawler for study purpose...  
+Output `.ePub` file.   
+Output `markdown` files if needed.      
 
 ## How to use?  
 * clone or download this project.  
@@ -24,6 +26,7 @@ the `options` object has the following specifications:
 | outputDir | optional | string | './' |  
 | charset | optional | string | 'utf8', 'gb2312'|
 | addFrontMatter | optional | boolean | false |   
+| generateMarkdown | optional | boolean | false |
 
 `table` function will parse toc for ebook.   
 it should return an `array` in this format.   
@@ -44,5 +47,5 @@ it should return an `array` in this format.
 
 check `example.js` for the example of `table` and `content` function.  
 
-## Generate ebook file  
+## Generate other ebook type files    
 The output `bookName.md` file can be converted to `.ePub`, `.mobi` etc files by using [Markdown Preview Enhanced](https://github.com/shd101wyy/markdown-preview-enhanced) package. Documentation can be found [here](https://github.com/shd101wyy/markdown-preview-enhanced/blob/master/docs/ebook.md).
