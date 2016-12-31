@@ -20,11 +20,11 @@
   },
   "homepage": "https://github.com/shd101wyy/Ebook-Crawler#readme",
   "dependencies": {
-    "async": "^2.1.2",
+    "async": "^2.1.4",
     "cheerio": "^0.22.0",
     "epub-gen": "0.0.16",
-    "iconv-lite": "^0.4.13",
-    "request": "^2.75.0",
+    "iconv-lite": "^0.4.15",
+    "request": "^2.79.0",
     "uslug": "^1.0.4"
   }
 }
